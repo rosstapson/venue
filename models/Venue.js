@@ -39,6 +39,9 @@ const venueSchema = new Schema({
         type: 'String',
         required: false
     },
+    tags: [{
+        type: 'String'
+    }],
     email: {
         type: 'String',
         required: false
