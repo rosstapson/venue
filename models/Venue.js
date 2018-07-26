@@ -13,6 +13,9 @@ const venueSchema = new Schema({
     constactUser: {
         id: ''
     },
+    imageUrl: {
+        type: 'String'
+    },
     address: {
         line1: {
           type: 'String',
