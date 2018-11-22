@@ -2,16 +2,10 @@ require('babel-register');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-//const formidable = require('express-formidable');
 const app = express();
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors());
-// app.use(formidable({
-//   encoding: 'utf-8',
-//   uploadDir: __dirname + '/images',
-//   multiples: true, // req.files to be arrays of files
-// }));
 const mongoose = require('mongoose');
 const Venue = require('./models/Venue');
 
