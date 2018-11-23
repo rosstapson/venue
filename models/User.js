@@ -9,32 +9,23 @@ const userSchema = new Schema({
           true, "Username required"
         ],
         unique: [true, "Username is not available"]
-    },    
+    },
+    email: {
+      type: 'String',
+      required: [
+        true, 'Email address required'
+      ]
+    },
+    password: {
+      type: 'String',
+      required: [
+        true, 'Password required'
+      ]
+    },
     imageUrl: {
         type: 'String'
     },
-    address: {
-        line1: {
-          type: 'String',
-          required: false
-        },
-        line2: {
-          type: 'String',
-          required: false
-        },
-        line3: {
-          type: 'String',
-          required: false
-        },
-        state: {
-          type: 'String',
-          required: false
-        },
-        country: {
-          type: 'String',
-          required: false
-        }
-    },
+    address: [{type: 'String'}],
     contactNumber: {
         type: 'String',
         required: false

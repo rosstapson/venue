@@ -12,25 +12,21 @@ app.get('/', (req, res) => {
 app.get('/venues', (req, res) => {
     
     let venues = Venue.find()
-        .then((venues) => {
-            console.log('then')
-            console.log(venues)
+        .then((venues) => {           
             res.status(200).send(venues)
         })
         .catch((error) => {
-            console.log('catch')
+            console.log(error)
             return res.status(418).send({message: error.message})
         })
 })
-app.post('/venues', (req, res) => {
-    console.log(req.body)
+app.post('/venues', (req, res) => {   
     let venue = new Venue(req.body);
     venue.save((error, venue) => {
         if(error) {
             console.log(error);
             return res.status(418).send(error.message)
-        }
-        console.log('success')
+        }        
         return res.status(201).send({message: 'zomg, success'})
     })
 })

@@ -12,25 +12,20 @@ app.get('/', (req, res) => {
 app.get('/users', (req, res) => {
     
     let users = User.find()
-        .then((users) => {
-            console.log('then')
-            console.log(users)
+        .then((users) => {            
             res.status(200).send(users)
         })
-        .catch((error) => {
-            console.log('catch')
+        .catch((error) => {           
             return res.status(418).send({message: error.message})
         })
 })
-app.post('/users', (req, res) => {
-    console.log(req.body)
+app.post('/users', (req, res) => {    
     let user = new User(req.body);
     user.save((error, user) => {
         if(error) {
             console.log(error);
             return res.status(418).send(error.message)
-        }
-        console.log('success')
+        }        
         return res.status(201).send({message: 'zomg, success'})
     })
 })
