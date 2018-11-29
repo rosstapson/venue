@@ -8,7 +8,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors());
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://venue:password@localhost/venues');
+mongoose.connect('mongodb://venue:password@localhost:27017/venues', { useNewUrlParser: true });
 mongoose.Promise = global.Promise
 var db = mongoose.connection;
 

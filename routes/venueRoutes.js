@@ -5,10 +5,6 @@ import formidable from 'formidable';
 
 const app = module.exports = express.Router();
 
-app.get('/', (req, res) => {
-    res.send("here's route folder.")
-})
-
 app.get('/venues', (req, res) => {
     
     let venues = Venue.find()

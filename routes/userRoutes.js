@@ -6,11 +6,24 @@ import formidable from 'formidable';
 const app = module.exports = express.Router();
 
 app.get('/', (req, res) => {
-    res.send("here's route folder.")
-})
+    res.send("here's root url.")
+});
+app.post('/login', (req, res) => {
+    let userDetails = req.body;    
+    let user = User.findOne({username: req.body.username})
+        .then((user) => {
+            if (user.password !== req.body.password) { // todo: hash and compare
+                return res.status(401).send({message: "Invalid Password"});
+            }
+            return res.status(200).send(user); // todo: send token
+        })
+        .catch((error) => {
+            console.log(error)
+            return res.status(401).send({message: "Invalid user credentials"})
+        });   
 
-app.get('/users', (req, res) => {
-    
+});
+app.get('/users', (req, res) => {    
     let users = User.find()
         .then((users) => {            
             res.status(200).send(users)
@@ -21,6 +34,7 @@ app.get('/users', (req, res) => {
 })
 app.post('/users', (req, res) => {    
     let user = new User(req.body);
+    // hash password
     user.save((error, user) => {
         if(error) {
             console.log(error);
