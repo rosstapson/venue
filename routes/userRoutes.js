@@ -2,6 +2,7 @@ import express from 'express';
 import User from '../models/User';
 //import cuid from 'cuid';
 import formidable from 'formidable';
+import bcrypt from 'bcrypt';
 
 const app = module.exports = express.Router();
 
@@ -12,7 +13,8 @@ app.post('/login', (req, res) => {
     let userDetails = req.body;    
     let user = User.findOne({username: req.body.username})
         .then((user) => {
-            if (user.password !== req.body.password) { // todo: hash and compare
+            let hash = bcrypt.hashSync(userDetails.password);
+            if (user.password !== hash) { 
                 return res.status(401).send({message: "Invalid Password"});
             }
             return res.status(200).send(user); // todo: send token
@@ -35,6 +37,8 @@ app.get('/users', (req, res) => {
 app.post('/users', (req, res) => {    
     let user = new User(req.body);
     // hash password
+    let hash = bcrypt.hashSync(user.password);
+    user.password = hash;
     user.save((error, user) => {
         if(error) {
             console.log(error);
