@@ -1,23 +1,36 @@
 import express from 'express';
 import User from '../models/User';
-//import cuid from 'cuid';
 import formidable from 'formidable';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { SECRET } from '../config';
 
 const app = module.exports = express.Router();
 
 app.get('/', (req, res) => {
-    res.send("here's root url.")
+    res.send("here's root url. userRoutes get /")
 });
 app.post('/login', (req, res) => {
     let userDetails = req.body;    
     let user = User.findOne({username: req.body.username})
         .then((user) => {
-            let hash = bcrypt.hashSync(userDetails.password);
-            if (user.password !== hash) { 
-                return res.status(401).send({message: "Invalid Password"});
+            if (!user) {
+                return res.status(401).send({message: req.body.username + " not registered."});
             }
-            return res.status(200).send(user); // todo: send token
+            
+            //console.info(hash + " versus " + user.password);
+            let hash = user.password;
+            let password = userDetails.password;
+            //console.log(hash);
+            if (!bcrypt.compareSync(password, hash)) { 
+                return res.status(401).send({message: "Invalid User Credentials"});
+            }
+            
+            let tempUser = user.toJSON();
+            tempUser.password = ''; // as jwt's are not, strictly speaking, encrypted
+            let token = jwt.sign(tempUser, SECRET);
+            tempUser.token = token;
+            return res.status(200).send({user: tempUser}); // todo: send token
         })
         .catch((error) => {
             console.log(error)
@@ -36,8 +49,14 @@ app.get('/users', (req, res) => {
 })
 app.post('/users', (req, res) => {    
     let user = new User(req.body);
+    // todo: mail confirm etc
     // hash password
-    let hash = bcrypt.hashSync(user.password);
+    if (!user.username || !user.password) {
+        return res.status(418).send({message: 'Fill in required fields.'})
+    }
+    //console.info(user.password);
+    const salt = bcrypt.genSaltSync();  
+    let hash = bcrypt.hashSync(user.password, salt);
     user.password = hash;
     user.save((error, user) => {
         if(error) {
